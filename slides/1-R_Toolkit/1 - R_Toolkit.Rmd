@@ -13,7 +13,7 @@ output:
       countIncrementalSlides: false
 ---
 
-```{r child = "../setup.Rmd"}
+```{r child = "setup.Rmd"}
 ```
 
 ```{r packages, echo=FALSE, message=FALSE, warning=FALSE}
@@ -58,7 +58,7 @@ By the end of the module, you will be able to...
 - gain insight from data, reproducibly **and collaboratively**, using modern programming tools and techniques
 
 --
-- gain insight from data, reproducibly **(with literate programming and version control)** and collaboratively, using modern programming tools and techniquesx
+- gain insight from data, reproducibly and collaboratively, using modern programming tools and techniques, **to answer to key intelligence topics**
 
 ---
 
@@ -107,7 +107,7 @@ class: middle
 
 .pull-left[
 ```{r echo=FALSE, out.width="25%"}
-knitr::include_graphics("img/r-logo.png")
+knitr::include_graphics("img/r-logo.png", error = FALSE)
 ```
 - R is an open-source statistical **programming language**
 - R is also an environment for statistical computing and graphics
@@ -115,7 +115,7 @@ knitr::include_graphics("img/r-logo.png")
 ]
 .pull-right[
 ```{r echo=FALSE, out.width="50%"}
-knitr::include_graphics("img/rstudio-logo.png")
+knitr::include_graphics("img/rstudio-logo.png", error = FALSE)
 ```
 - RStudio is a convenient interface for R called an **IDE** (integrated development environment), e.g. *"I write R code in the RStudio IDE"*
 - RStudio is not a requirement for programming with R, but it's very commonly used by R programmers and data scientists
@@ -143,7 +143,7 @@ knitr::include_graphics("img/rstudio-logo.png")
 ## Tour: R and RStudio
 
 ```{r echo=FALSE, out.width="80%"}
-knitr::include_graphics("img/tour-r-rstudio.png")
+knitr::include_graphics("img/tour-r-rstudio.png", error = FALSE)
 ```
 
 ---
