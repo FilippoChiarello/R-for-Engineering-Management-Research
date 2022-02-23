@@ -1,7 +1,7 @@
 ---
 title: "Meet the toolkit"
-subtitle: "<br><br> Data Science in a Box"
-author: "[datasciencebox.org](https://datasciencebox.org/)"
+subtitle: "Tidyverse & Co."
+author: "<br>Filippo Chiarello, Ph.D."
 output:
   xaringan::moon_reader:
     css: ["../xaringan-themer.css", "../slides.css"]
@@ -13,7 +13,7 @@ output:
       countIncrementalSlides: false
 ---
 
-```{r child = "setup.Rmd"}
+```{r child = "../setup.Rmd"}
 ```
 
 ```{r packages, echo=FALSE, message=FALSE, warning=FALSE}
@@ -81,6 +81,8 @@ Near-term goals:
 - Are the tables and figures reproducible from the code and data?
 - Does the code actually do what you think it does?
 - In addition to what was done, is it clear *why* it was done? 
+
+--
 
 Long-term goals:
 
