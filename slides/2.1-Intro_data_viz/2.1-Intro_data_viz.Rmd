@@ -1,7 +1,7 @@
 ---
 title: "Data and visualisation"
-subtitle: "<br><br> Data Science in a Box"
-author: "Filippo Chiarello, Ph.D."
+subtitle: "Ggplot2 ❤️"
+author: "<br> Filippo Chiarello, Ph.D."
 output:
   xaringan::moon_reader:
     css: ["../xaringan-themer.css", "../slides.css"]
@@ -29,6 +29,12 @@ class: middle
 
 ---
 
+# Let's open RStudio Cloud
+
+[LINK](https://rstudio.cloud/spaces/217848)
+
+---
+
 ## Dataset terminology
 
 - Each row is an **observation**
@@ -41,6 +47,8 @@ starwars
 ```
 
 ]
+
+
 
 ---
 

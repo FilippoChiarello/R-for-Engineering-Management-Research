@@ -1,16 +1,11 @@
 ---
-<<<<<<< HEAD
 title: "Doing SCIence"
-=======
-title: "Doing data science"
->>>>>>> b0273a42ceb3b9c1b6e99663e1f94effec2bb311
-subtitle: ""
-author: "Filippo Chiarello, Ph.D"
+subtitle: "The workflow and questions generation"
+author: "<br>Filippo Chiarello, Ph.D."
 output:
   xaringan::moon_reader:
     css: ["../xaringan-themer.css", "../slides.css"]
     lib_dir: libs
-    anchor_sections: FALSE
     nature:
       ratio: "16:9"
       highlightLines: true
@@ -18,21 +13,21 @@ output:
       countIncrementalSlides: false
 ---
 
-```{r child = "../setup.Rmd"}
+```{r child = "setup.Rmd"}
 ```
+
 
 ```{r packages, echo = FALSE, message=FALSE, warning=FALSE}
 library(tidyverse)
 ```
 
+
 class: middle
 
-<<<<<<< HEAD
+
 # A question you've answered many times:
 ## What's in a data analisis?
-=======
-# What's in a data analisis?
->>>>>>> b0273a42ceb3b9c1b6e99663e1f94effec2bb311
+
 
 ---
 
@@ -121,14 +116,13 @@ Suppose I want to estimate the average number of children in households in Edinb
 ]
 
 ---
-<<<<<<< HEAD
 
-=======
->>>>>>> b0273a42ceb3b9c1b6e99663e1f94effec2bb311
+
+
 ##KIT & KIQ
 
 .question[
-**Key  Intelligence  Topics**  (KITs)  are  thekey questions that competitive intelligence  professionals  are trying  to answer about what’s happening outside of  their     organizations,  the  “what  you need to know” to be successful.
+**Key  Intelligence  Topics**  (KITs)  are  the key questions that competitive intelligence  professionals  are trying  to answer about what’s happening outside of  their organizations, the  “what you need to know” to be successful.
 ] 
 
 .question[
@@ -151,7 +145,9 @@ knitr::include_graphics('./img/kit_schema.png', error = FALSE)
 ##Key Intelligence Topics
 
 1. *Strategic KITs*: contribute to key decisions in relation to strategic formulations and implementation for the company. Strategic KITs are used to make determine on actions such as: investment decisions, global expansion, technological competitiveness, global alliances and/or acquisitions. 
+--
 2. *Early Warning KITs*: identify forthcoming threats and opportunities for the company in the market. Some examples of Early Warning KITs include: new entrant threats, government regulations, untapped market, and any shifts in bargaining power. 
+--
 3. *Key Players KITs*: arise from market rivalries, new entrants, and substitute products. However, Key Player KITs can also deal with none threatening means such as new suppliers or contractors which have entered the market as well.
 
 ---
@@ -181,18 +177,14 @@ In the example below, if the KIT is competitor reaction to a new product, your K
 9. What do their employee think about the company?
 
 --
-<<<<<<< HEAD
 
-=======
->>>>>>> b0273a42ceb3b9c1b6e99663e1f94effec2bb311
 **Machines** 
 10. What technologies are they investing on?
 11. Do they have the proper technologies for thier processes?
 12. Do some recent changes in the technological environemnt have an impact on them?
-<<<<<<< HEAD
-=======
-13.
->>>>>>> b0273a42ceb3b9c1b6e99663e1f94effec2bb311
+
+
+
 
 ---
 
@@ -228,10 +220,10 @@ class: middle
 4. **Identify Stop Criteria**: A univocal point of arrive will help you understand when you will not have to invest resources on a specifi c research direction. 
 
 ---
-<<<<<<< HEAD
 
-=======
->>>>>>> b0273a42ceb3b9c1b6e99663e1f94effec2bb311
+
+
+
 ## HOW DO I ARTICULATE MY KIT?
 
 .question[
@@ -243,6 +235,8 @@ class: middle
 .question[
 **SPECIFICITY**: The KIT has to capture the nature of your research without being too broad. The goal is to avoid ambiguity and fuzziness, because being precise make the research task easier.
 ]
+
+--
 
 .question[
 **USEFULNESS**: The KIT has to answer a questions that the company cares about. In other words, if you are able to solve the KIT, the company will create more value: more money 💰, less resources 🥬.
