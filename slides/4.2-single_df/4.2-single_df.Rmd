@@ -1,10 +1,10 @@
 ---
 title: "Working with a single data frame"
-subtitle: "<br><br> Data Science in a Box"
-author: "[datasciencebox.org](https://datasciencebox.org/)"
+subtitle: ""
+author: "Filippo Chiarello, Ph.D."
 output:
   xaringan::moon_reader:
-    css: ["../xaringan-themer.css", "../slides.css"]
+    css: ["xaringan-themer.css", "slides.css"]
     lib_dir: libs
     nature:
       ratio: "16:9"

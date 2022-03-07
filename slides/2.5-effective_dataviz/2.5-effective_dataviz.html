@@ -3,22 +3,21 @@
   <head>
     <title>Tips for effective data visualization</title>
     <meta charset="utf-8" />
-    <meta name="author" content="datasciencebox.org" />
+    <meta name="author" content="Filippo Chiarello, Ph.D." />
     <script src="libs/header-attrs/header-attrs.js"></script>
     <link href="libs/font-awesome/css/all.css" rel="stylesheet" />
     <link href="libs/font-awesome/css/v4-shims.css" rel="stylesheet" />
     <link href="libs/panelset/panelset.css" rel="stylesheet" />
     <script src="libs/panelset/panelset.js"></script>
-    <link rel="stylesheet" href="../xaringan-themer.css" type="text/css" />
-    <link rel="stylesheet" href="../slides.css" type="text/css" />
+    <link rel="stylesheet" href="xaringan-themer.css" type="text/css" />
+    <link rel="stylesheet" href="slides.css" type="text/css" />
   </head>
   <body>
     <textarea id="source">
 class: center, middle, inverse, title-slide
 
 # Tips for effective data visualization
-## <br><br> Data Science in a Box
-### <a href="https://datasciencebox.org/">datasciencebox.org</a>
+### Filippo Chiarello, Ph.D.
 
 ---
 
@@ -30,7 +29,7 @@ layout: true
   
 &lt;div class="my-footer"&gt;
 &lt;span&gt;
-&lt;a href="https://datasciencebox.org" target="_blank"&gt;datasciencebox.org&lt;/a&gt;
+&lt;a href="https://datasciencebox.org" target="_blank"&gt;datasciencebox.org, Filipp Chiarello ©&lt;/a&gt;
 &lt;/span&gt;
 &lt;/div&gt; 
 
@@ -50,7 +49,7 @@ class: middle
 &lt;img src="img/pie-3d.jpg" width="100%" style="display: block; margin: auto;" /&gt;
 ]
 .pull-right-wide[
-&lt;img src="u2-d14-effective-dataviz_files/figure-html/pie-to-bar-1.png" width="100%" style="display: block; margin: auto;" /&gt;
+&lt;img src="2.5-effective_dataviz_files/figure-html/pie-to-bar-1.png" width="100%" style="display: block; margin: auto;" /&gt;
 ]
 
 
@@ -60,10 +59,10 @@ class: middle
 ## Use	color	to	draw	attention
 
 .pull-left[
-&lt;img src="u2-d14-effective-dataviz_files/figure-html/unnamed-chunk-2-1.png" width="100%" style="display: block; margin: auto;" /&gt;
+&lt;img src="2.5-effective_dataviz_files/figure-html/unnamed-chunk-2-1.png" width="100%" style="display: block; margin: auto;" /&gt;
 ]
 .pull-right[
-&lt;img src="u2-d14-effective-dataviz_files/figure-html/unnamed-chunk-3-1.png" width="100%" style="display: block; margin: auto;" /&gt;
+&lt;img src="2.5-effective_dataviz_files/figure-html/unnamed-chunk-3-1.png" width="100%" style="display: block; margin: auto;" /&gt;
 ]
 
 ---
@@ -109,7 +108,7 @@ In September 2019, YouGov survey asked 1,639 GB adults the following question:
 .pull-right[
 
 
-&lt;img src="u2-d14-effective-dataviz_files/figure-html/unnamed-chunk-6-1.png" width="100%" style="display: block; margin: auto;" /&gt;
+&lt;img src="2.5-effective_dataviz_files/figure-html/unnamed-chunk-6-1.png" width="100%" style="display: block; margin: auto;" /&gt;
 ]
 
 .footnote[ 
@@ -129,7 +128,7 @@ class: middle
 .panelset[
 
 .panel[.panel-name[Plot]
-&lt;img src="u2-d14-effective-dataviz_files/figure-html/unnamed-chunk-7-1.png" width="60%" style="display: block; margin: auto;" /&gt;
+&lt;img src="2.5-effective_dataviz_files/figure-html/unnamed-chunk-7-1.png" width="60%" style="display: block; margin: auto;" /&gt;
 ]
 
 .panel[.panel-name[Code]
@@ -149,7 +148,7 @@ ggplot(brexit, aes(x = opinion)) +
 .panelset[
 
 .panel[.panel-name[Plot]
-&lt;img src="u2-d14-effective-dataviz_files/figure-html/unnamed-chunk-8-1.png" width="60%" style="display: block; margin: auto;" /&gt;
+&lt;img src="2.5-effective_dataviz_files/figure-html/unnamed-chunk-8-1.png" width="60%" style="display: block; margin: auto;" /&gt;
 ]
 
 .panel[.panel-name[Code]
@@ -172,7 +171,7 @@ ggplot(brexit, aes(x = opinion)) +
 .panelset[
 
 .panel[.panel-name[Plot]
-&lt;img src="u2-d14-effective-dataviz_files/figure-html/unnamed-chunk-9-1.png" width="60%" style="display: block; margin: auto;" /&gt;
+&lt;img src="2.5-effective_dataviz_files/figure-html/unnamed-chunk-9-1.png" width="60%" style="display: block; margin: auto;" /&gt;
 ]
 
 .panel[.panel-name[Code]
@@ -197,7 +196,7 @@ ggplot(brexit, aes(x = opinion)) +
 .panelset[
 
 .panel[.panel-name[Plot]
-&lt;img src="u2-d14-effective-dataviz_files/figure-html/unnamed-chunk-10-1.png" width="60%" style="display: block; margin: auto;" /&gt;
+&lt;img src="2.5-effective_dataviz_files/figure-html/unnamed-chunk-10-1.png" width="60%" style="display: block; margin: auto;" /&gt;
 ]
 
 .panel[.panel-name[Code]
@@ -234,7 +233,7 @@ brexit &lt;- brexit %&gt;%
 ]
 
 .panel[.panel-name[Plot]
-&lt;img src="u2-d14-effective-dataviz_files/figure-html/unnamed-chunk-11-1.png" width="60%" style="display: block; margin: auto;" /&gt;
+&lt;img src="2.5-effective_dataviz_files/figure-html/unnamed-chunk-11-1.png" width="60%" style="display: block; margin: auto;" /&gt;
 ]
 
 ]
@@ -266,7 +265,7 @@ brexit &lt;- brexit %&gt;%
 ]
 
 .panel[.panel-name[Plot]
-&lt;img src="u2-d14-effective-dataviz_files/figure-html/recode-plot-1.png" width="60%" style="display: block; margin: auto;" /&gt;
+&lt;img src="2.5-effective_dataviz_files/figure-html/recode-plot-1.png" width="60%" style="display: block; margin: auto;" /&gt;
 ]
 
 ]
@@ -281,7 +280,7 @@ class: middle
 
 ## Long categories can be hard to read
 
-&lt;img src="u2-d14-effective-dataviz_files/figure-html/unnamed-chunk-12-1.png" width="60%" style="display: block; margin: auto;" /&gt;
+&lt;img src="2.5-effective_dataviz_files/figure-html/unnamed-chunk-12-1.png" width="60%" style="display: block; margin: auto;" /&gt;
 
 ---
 
@@ -290,7 +289,7 @@ class: middle
 .panelset[
 
 .panel[.panel-name[Plot]
-&lt;img src="u2-d14-effective-dataviz_files/figure-html/unnamed-chunk-13-1.png" width="60%" style="display: block; margin: auto;" /&gt;
+&lt;img src="2.5-effective_dataviz_files/figure-html/unnamed-chunk-13-1.png" width="60%" style="display: block; margin: auto;" /&gt;
 ]
 
 .panel[.panel-name[Code]
@@ -311,7 +310,7 @@ class: middle
 .panelset[
 
 .panel[.panel-name[Plot]
-&lt;img src="u2-d14-effective-dataviz_files/figure-html/unnamed-chunk-14-1.png" width="60%" style="display: block; margin: auto;" /&gt;
+&lt;img src="2.5-effective_dataviz_files/figure-html/unnamed-chunk-14-1.png" width="60%" style="display: block; margin: auto;" /&gt;
 ]
 
 .panel[.panel-name[Code]
@@ -334,7 +333,7 @@ class: middle
 .panelset[
 
 .panel[.panel-name[Plot]
-&lt;img src="u2-d14-effective-dataviz_files/figure-html/unnamed-chunk-15-1.png" width="60%" style="display: block; margin: auto;" /&gt;
+&lt;img src="2.5-effective_dataviz_files/figure-html/unnamed-chunk-15-1.png" width="60%" style="display: block; margin: auto;" /&gt;
 ]
 
 .panel[.panel-name[Code]
@@ -365,7 +364,7 @@ class: middle
 .panelset[
 
 .panel[.panel-name[Plot]
-&lt;img src="u2-d14-effective-dataviz_files/figure-html/unnamed-chunk-16-1.png" width="60%" style="display: block; margin: auto;" /&gt;
+&lt;img src="2.5-effective_dataviz_files/figure-html/unnamed-chunk-16-1.png" width="60%" style="display: block; margin: auto;" /&gt;
 ]
 
 .panel[.panel-name[Code]
@@ -386,7 +385,7 @@ class: middle
 .panelset[
 
 .panel[.panel-name[Plot]
-&lt;img src="u2-d14-effective-dataviz_files/figure-html/unnamed-chunk-17-1.png" width="90%" style="display: block; margin: auto;" /&gt;
+&lt;img src="2.5-effective_dataviz_files/figure-html/unnamed-chunk-17-1.png" width="90%" style="display: block; margin: auto;" /&gt;
 ]
 
 .panel[.panel-name[Code]
@@ -405,7 +404,7 @@ ggplot(brexit, aes(y = opinion, fill = region)) +
 
 ## Avoid redundancy?
 
-&lt;img src="u2-d14-effective-dataviz_files/figure-html/unnamed-chunk-18-1.png" width="90%" style="display: block; margin: auto;" /&gt;
+&lt;img src="2.5-effective_dataviz_files/figure-html/unnamed-chunk-18-1.png" width="90%" style="display: block; margin: auto;" /&gt;
 
 ---
 
@@ -414,7 +413,7 @@ ggplot(brexit, aes(y = opinion, fill = region)) +
 .panelset[
 
 .panel[.panel-name[Plot]
-&lt;img src="u2-d14-effective-dataviz_files/figure-html/unnamed-chunk-19-1.png" width="90%" style="display: block; margin: auto;" /&gt;
+&lt;img src="2.5-effective_dataviz_files/figure-html/unnamed-chunk-19-1.png" width="90%" style="display: block; margin: auto;" /&gt;
 ]
 
 .panel[.panel-name[Code]
@@ -436,7 +435,13 @@ ggplot(brexit, aes(y = opinion, fill = opinion)) +
 .panelset[
 
 .panel[.panel-name[Plot]
-&lt;img src="u2-d14-effective-dataviz_files/figure-html/unnamed-chunk-20-1.png" width="90%" style="display: block; margin: auto;" /&gt;
+
+```
+## Warning: `guides(&lt;scale&gt; = FALSE)` is deprecated. Please use
+## `guides(&lt;scale&gt; = "none")` instead.
+```
+
+&lt;img src="2.5-effective_dataviz_files/figure-html/unnamed-chunk-20-1.png" width="90%" style="display: block; margin: auto;" /&gt;
 ]
 
 .panel[.panel-name[Code]
@@ -447,6 +452,11 @@ ggplot(brexit, aes(y = opinion, fill = opinion)) +
   geom_bar() +
   facet_wrap(~region, nrow = 1) +
 * guides(fill = FALSE)
+```
+
+```
+## Warning: `guides(&lt;scale&gt; = FALSE)` is deprecated. Please use
+## `guides(&lt;scale&gt; = "none")` instead.
 ```
 ]
 
@@ -459,7 +469,13 @@ ggplot(brexit, aes(y = opinion, fill = opinion)) +
 .panelset[
 
 .panel[.panel-name[Plot]
-&lt;img src="u2-d14-effective-dataviz_files/figure-html/unnamed-chunk-21-1.png" width="90%" style="display: block; margin: auto;" /&gt;
+
+```
+## Warning: `guides(&lt;scale&gt; = FALSE)` is deprecated. Please use
+## `guides(&lt;scale&gt; = "none")` instead.
+```
+
+&lt;img src="2.5-effective_dataviz_files/figure-html/unnamed-chunk-21-1.png" width="90%" style="display: block; margin: auto;" /&gt;
 ]
 
 .panel[.panel-name[Code]
@@ -475,6 +491,11 @@ ggplot(brexit, aes(y = opinion, fill = opinion)) +
     x = NULL, y = NULL
   )
 ```
+
+```
+## Warning: `guides(&lt;scale&gt; = FALSE)` is deprecated. Please use
+## `guides(&lt;scale&gt; = "none")` instead.
+```
 ]
 
 ]
@@ -486,7 +507,13 @@ ggplot(brexit, aes(y = opinion, fill = opinion)) +
 .panelset[
 
 .panel[.panel-name[Plot]
-&lt;img src="u2-d14-effective-dataviz_files/figure-html/unnamed-chunk-22-1.png" width="90%" style="display: block; margin: auto;" /&gt;
+
+```
+## Warning: `guides(&lt;scale&gt; = FALSE)` is deprecated. Please use
+## `guides(&lt;scale&gt; = "none")` instead.
+```
+
+&lt;img src="2.5-effective_dataviz_files/figure-html/unnamed-chunk-22-1.png" width="90%" style="display: block; margin: auto;" /&gt;
 ]
 
 .panel[.panel-name[Code]
@@ -504,6 +531,11 @@ ggplot(brexit, aes(y = opinion, fill = opinion)) +
     x = NULL, y = NULL
   )
 ```
+
+```
+## Warning: `guides(&lt;scale&gt; = FALSE)` is deprecated. Please use
+## `guides(&lt;scale&gt; = "none")` instead.
+```
 ]
 
 ]
@@ -515,7 +547,13 @@ ggplot(brexit, aes(y = opinion, fill = opinion)) +
 .panelset[
 
 .panel[.panel-name[Plot]
-&lt;img src="u2-d14-effective-dataviz_files/figure-html/unnamed-chunk-23-1.png" width="90%" style="display: block; margin: auto;" /&gt;
+
+```
+## Warning: `guides(&lt;scale&gt; = FALSE)` is deprecated. Please use
+## `guides(&lt;scale&gt; = "none")` instead.
+```
+
+&lt;img src="2.5-effective_dataviz_files/figure-html/unnamed-chunk-23-1.png" width="90%" style="display: block; margin: auto;" /&gt;
 ]
 
 .panel[.panel-name[Code]
@@ -533,6 +571,11 @@ ggplot(brexit, aes(y = opinion, fill = opinion)) +
     x = NULL, y = NULL
   )
 ```
+
+```
+## Warning: `guides(&lt;scale&gt; = FALSE)` is deprecated. Please use
+## `guides(&lt;scale&gt; = "none")` instead.
+```
 ]
 
 ]
@@ -544,7 +587,13 @@ ggplot(brexit, aes(y = opinion, fill = opinion)) +
 .panelset[
 
 .panel[.panel-name[Plot]
-&lt;img src="u2-d14-effective-dataviz_files/figure-html/unnamed-chunk-24-1.png" width="90%" style="display: block; margin: auto;" /&gt;
+
+```
+## Warning: `guides(&lt;scale&gt; = FALSE)` is deprecated. Please use
+## `guides(&lt;scale&gt; = "none")` instead.
+```
+
+&lt;img src="2.5-effective_dataviz_files/figure-html/unnamed-chunk-24-1.png" width="90%" style="display: block; margin: auto;" /&gt;
 ]
 
 .panel[.panel-name[Code]
@@ -565,6 +614,11 @@ ggplot(brexit, aes(y = opinion, fill = opinion)) +
     x = NULL, y = NULL
   )
 ```
+
+```
+## Warning: `guides(&lt;scale&gt; = FALSE)` is deprecated. Please use
+## `guides(&lt;scale&gt; = "none")` instead.
+```
 ]
 
 ]
@@ -579,7 +633,13 @@ class: middle
 
 ## Rainbow colors not always the right choice
 
-&lt;img src="u2-d14-effective-dataviz_files/figure-html/unnamed-chunk-25-1.png" width="90%" style="display: block; margin: auto;" /&gt;
+
+```
+## Warning: `guides(&lt;scale&gt; = FALSE)` is deprecated. Please use
+## `guides(&lt;scale&gt; = "none")` instead.
+```
+
+&lt;img src="2.5-effective_dataviz_files/figure-html/unnamed-chunk-25-1.png" width="90%" style="display: block; margin: auto;" /&gt;
 
 ---
 
@@ -588,7 +648,13 @@ class: middle
 .panelset[
 
 .panel[.panel-name[Plot]
-&lt;img src="u2-d14-effective-dataviz_files/figure-html/unnamed-chunk-26-1.png" width="90%" style="display: block; margin: auto;" /&gt;
+
+```
+## Warning: `guides(&lt;scale&gt; = FALSE)` is deprecated. Please use
+## `guides(&lt;scale&gt; = "none")` instead.
+```
+
+&lt;img src="2.5-effective_dataviz_files/figure-html/unnamed-chunk-26-1.png" width="90%" style="display: block; margin: auto;" /&gt;
 ]
 
 .panel[.panel-name[Code]
@@ -608,6 +674,11 @@ ggplot(brexit, aes(y = opinion, fill = opinion)) +
 *   "Right" = "green",
 *   "Don't know" = "gray"
 * ))
+```
+
+```
+## Warning: `guides(&lt;scale&gt; = FALSE)` is deprecated. Please use
+## `guides(&lt;scale&gt; = "none")` instead.
 ```
 ]
 
@@ -630,7 +701,13 @@ ggplot(brexit, aes(y = opinion, fill = opinion)) +
 .panelset[
 
 .panel[.panel-name[Plot]
-&lt;img src="u2-d14-effective-dataviz_files/figure-html/unnamed-chunk-28-1.png" width="90%" style="display: block; margin: auto;" /&gt;
+
+```
+## Warning: `guides(&lt;scale&gt; = FALSE)` is deprecated. Please use
+## `guides(&lt;scale&gt; = "none")` instead.
+```
+
+&lt;img src="2.5-effective_dataviz_files/figure-html/unnamed-chunk-28-1.png" width="90%" style="display: block; margin: auto;" /&gt;
 ]
 
 .panel[.panel-name[Code]
@@ -651,6 +728,11 @@ ggplot(brexit, aes(y = opinion, fill = opinion)) +
 *   "Don't know" = "gray"
   ))
 ```
+
+```
+## Warning: `guides(&lt;scale&gt; = FALSE)` is deprecated. Please use
+## `guides(&lt;scale&gt; = "none")` instead.
+```
 ]
 
 ]
@@ -662,7 +744,13 @@ ggplot(brexit, aes(y = opinion, fill = opinion)) +
 .panelset[
 
 .panel[.panel-name[Plot]
-&lt;img src="u2-d14-effective-dataviz_files/figure-html/unnamed-chunk-29-1.png" width="90%" style="display: block; margin: auto;" /&gt;
+
+```
+## Warning: `guides(&lt;scale&gt; = FALSE)` is deprecated. Please use
+## `guides(&lt;scale&gt; = "none")` instead.
+```
+
+&lt;img src="2.5-effective_dataviz_files/figure-html/unnamed-chunk-29-1.png" width="90%" style="display: block; margin: auto;" /&gt;
 ]
 
 .panel[.panel-name[Code]
@@ -682,6 +770,11 @@ ggplot(brexit, aes(y = opinion, fill = opinion)) +
                                "Don't know" = "gray")) +
 * theme_minimal()
 ```
+
+```
+## Warning: `guides(&lt;scale&gt; = FALSE)` is deprecated. Please use
+## `guides(&lt;scale&gt; = "none")` instead.
+```
 ]
 
 ]
@@ -691,6 +784,9 @@ ggplot(brexit, aes(y = opinion, fill = opinion)) +
 .your-turn[
 ### .hand[Your turn!]
 .midi[
+
+[LINK TO R STUDIO CLOUD](https://rstudio.cloud/spaces/1655/project/3596062)
+
 - RStudio Cloud &gt; `AE 07 - Brexit + Telling stories with dataviz` &gt; `brexit.Rmd`. 
 - Change the visualisation in three different ways to tell slightly different stories with it each time.
 ]
