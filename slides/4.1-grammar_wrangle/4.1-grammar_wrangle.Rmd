@@ -1,7 +1,7 @@
 ---
 title: "Grammar of data wrangling"
 subtitle: ""
-author: "Filippo Chhiarello. Ph.D."
+author: "Filippo Chiarello, Ph.D."
 output:
   xaringan::moon_reader:
     css: ["xaringan-themer.css", "slides.css"]
