@@ -3,22 +3,21 @@
   <head>
     <title>Tidying data</title>
     <meta charset="utf-8" />
-    <meta name="author" content="datasciencebox.org" />
+    <meta name="author" content="Filippo Chiarello, Ph.D." />
     <script src="libs/header-attrs/header-attrs.js"></script>
     <link href="libs/font-awesome/css/all.css" rel="stylesheet" />
     <link href="libs/font-awesome/css/v4-shims.css" rel="stylesheet" />
     <link href="libs/panelset/panelset.css" rel="stylesheet" />
     <script src="libs/panelset/panelset.js"></script>
-    <link rel="stylesheet" href="../xaringan-themer.css" type="text/css" />
-    <link rel="stylesheet" href="../slides.css" type="text/css" />
+    <link rel="stylesheet" href="xaringan-themer.css" type="text/css" />
+    <link rel="stylesheet" href="slides.css" type="text/css" />
   </head>
   <body>
     <textarea id="source">
 class: center, middle, inverse, title-slide
 
 # Tidying data
-## <br><br> Data Science in a Box
-### <a href="https://datasciencebox.org/">datasciencebox.org</a>
+### Filippo Chiarello, Ph.D.
 
 ---
 
@@ -30,7 +29,7 @@ layout: true
   
 &lt;div class="my-footer"&gt;
 &lt;span&gt;
-&lt;a href="https://datasciencebox.org" target="_blank"&gt;datasciencebox.org&lt;/a&gt;
+&lt;a href="https://datasciencebox.org" target="_blank"&gt;datasciencebox.org, Filipp Chiarello ©&lt;/a&gt;
 &lt;/span&gt;
 &lt;/div&gt; 
 
@@ -338,170 +337,7 @@ purchases %&gt;%
 ```
 ]
 
----
 
-class: middle
-
-# Case study: Approval rating of Donald Trump
-
----
-
-&lt;img src="img/trump-approval.png" width="70%" style="display: block; margin: auto;" /&gt;
-
-.footnote[
-Source: [FiveThirtyEight](https://projects.fivethirtyeight.com/trump-approval-ratings/adults/)
-]
-
----
-
-## Data
-
-
-
-
-```r
-trump
-```
-
-```
-## # A tibble: 2,702 × 4
-##    subgroup date       approval disapproval
-##    &lt;chr&gt;    &lt;date&gt;        &lt;dbl&gt;       &lt;dbl&gt;
-##  1 Voters   2020-10-04     44.7        52.2
-##  2 Adults   2020-10-04     43.2        52.6
-##  3 Adults   2020-10-03     43.2        52.6
-##  4 Voters   2020-10-03     45.0        51.7
-##  5 Adults   2020-10-02     43.3        52.4
-##  6 Voters   2020-10-02     44.5        52.1
-##  7 Voters   2020-10-01     44.1        52.8
-##  8 Adults   2020-10-01     42.7        53.3
-##  9 Adults   2020-09-30     42.2        53.7
-## 10 Voters   2020-09-30     44.2        52.7
-## # … with 2,692 more rows
-```
-
----
-
-## Goal
-
-.pull-left-wide[
-&lt;img src="u2-d09-tidying_files/figure-html/unnamed-chunk-20-1.png" width="100%" style="display: block; margin: auto;" /&gt;
-]
---
-.pull-right-narrow[
-**Aesthetic mappings:**  
-✅  x = `date`  
-❌      y = `rating_value`  
-❌      color = `rating_type`
-
-**Facet:**  
-✅  `subgroup` (Adults and Voters)
-]
-
----
-
-## Pivot
-
-
-```r
-trump_longer &lt;- trump %&gt;%
-  pivot_longer(
-    cols = c(approval, disapproval),
-    names_to = "rating_type",
-    values_to = "rating_value"
-  )
-
-trump_longer
-```
-
-```
-## # A tibble: 5,404 × 4
-##    subgroup date       rating_type rating_value
-##    &lt;chr&gt;    &lt;date&gt;     &lt;chr&gt;              &lt;dbl&gt;
-##  1 Voters   2020-10-04 approval            44.7
-##  2 Voters   2020-10-04 disapproval         52.2
-##  3 Adults   2020-10-04 approval            43.2
-##  4 Adults   2020-10-04 disapproval         52.6
-##  5 Adults   2020-10-03 approval            43.2
-##  6 Adults   2020-10-03 disapproval         52.6
-##  7 Voters   2020-10-03 approval            45.0
-##  8 Voters   2020-10-03 disapproval         51.7
-...
-```
-
----
-
-## Plot
-
-
-```r
-ggplot(trump_longer, 
-       aes(x = date, y = rating_value, color = rating_type, group = rating_type)) +
-  geom_line() +
-  facet_wrap(~ subgroup)
-```
-
-&lt;img src="u2-d09-tidying_files/figure-html/unnamed-chunk-22-1.png" width="60%" style="display: block; margin: auto;" /&gt;
-
----
-
-.panelset[
-
-.panel[.panel-name[Code]
-
-```r
-ggplot(trump_longer, 
-       aes(x = date, y = rating_value, 
-           color = rating_type, group = rating_type)) +
-  geom_line() +
-  facet_wrap(~ subgroup) +
-* scale_color_manual(values = c("darkgreen", "orange")) +
-* labs(
-*   x = "Date", y = "Rating",
-*   color = NULL,
-*   title = "How (un)popular is Donald Trump?",
-*   subtitle = "Estimates based on polls of all adults and polls of likely/registered voters",
-*   caption = "Source: FiveThirtyEight modeling estimates"
-* )
-```
-]
-
-.panel[.panel-name[Plot]
-&lt;img src="u2-d09-tidying_files/figure-html/unnamed-chunk-23-1.png" width="75%" style="display: block; margin: auto;" /&gt;
-]
-
-]
-
----
-
-.panelset[
-
-.panel[.panel-name[Code]
-
-```r
-ggplot(trump_longer, 
-       aes(x = date, y = rating_value, 
-           color = rating_type, group = rating_type)) +
-  geom_line() +
-  facet_wrap(~ subgroup) +
-  scale_color_manual(values = c("darkgreen", "orange")) + 
-  labs( 
-    x = "Date", y = "Rating", 
-    color = NULL, 
-    title = "How (un)popular is Donald Trump?", 
-    subtitle = "Estimates based on polls of all adults and polls of likely/registered voters", 
-    caption = "Source: FiveThirtyEight modeling estimates" 
-  ) + 
-* theme_minimal() +
-* theme(legend.position = "bottom")
-```
-]
-
-.panel[.panel-name[Plot]
-&lt;img src="u2-d09-tidying_files/figure-html/unnamed-chunk-24-1.png" width="75%" style="display: block; margin: auto;" /&gt;
-]
-
-]
     </textarea>
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>

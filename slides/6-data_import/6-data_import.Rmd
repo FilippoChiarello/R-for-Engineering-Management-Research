@@ -1,10 +1,10 @@
 ---
 title: "Importing data"
-subtitle: "<br><br> Data Science in a Box"
-author: "[datasciencebox.org](https://datasciencebox.org/)"
+subtitle: ""
+author: "Filippo Chiarello, Ph.D."
 output:
   xaringan::moon_reader:
-    css: ["../xaringan-themer.css", "../slides.css"]
+    css: ["xaringan-themer.css", "slides.css"]
     lib_dir: libs
     nature:
       ratio: "16:9"
@@ -106,9 +106,9 @@ read_csv("data/df.csv")
 .your-turn[
 ### .hand[Your turn!]
 
-[LINK TO R STUDIO CLOUD](https://rstudio.cloud/spaces/1655/project/3596019)
+[LINK TO R STUDIO CLOUD](https://rstudio.cloud/spaces/217848)
 
-- RStudio Cloud > `AE 06 - Nobels and sales + Data import` > open `nobels-csv.Rmd` and knit.
+- RStudio Cloud > `Nobels and sales + Data import` > open `nobels-csv.Rmd` and knit.
 - Read in the `nobels.csv` file from the `data-raw/` folder.
 - Split into two (STEM and non-STEM): 
   - Create a new data frame, `nobel_stem`, that filters for the STEM fields 

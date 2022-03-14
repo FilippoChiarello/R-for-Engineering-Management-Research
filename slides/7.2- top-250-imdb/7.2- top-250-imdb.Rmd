@@ -1,10 +1,10 @@
 ---
 title: "Scraping top 250 movies on IMDB"
-subtitle: "<br><br> Data Science in a Box"
-author: "[datasciencebox.org](https://datasciencebox.org/)"
+subtitle: ""
+author: "Filippo Chiarello, Ph.D."
 output:
   xaringan::moon_reader:
-    css: ["../xaringan-themer.css", "../slides.css"]
+    css: ["xaringan-themer.css", "slides.css"]
     lib_dir: libs
     anchor_sections: FALSE
     nature:
@@ -83,6 +83,8 @@ knitr::include_graphics("img/plan.png")
 4. Scrape IMDB ratings and save as `ratings`
 
 5. Create a data frame called `imdb_top_250` with variables `title`, `year`, and `rating`
+
+[CODE on RStudio Cloud](https://rstudio.cloud/spaces/217848/project/3638345)
 
 ---
 
