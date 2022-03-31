@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Intro to Text Mining: Strings and regular expressions</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Filippo Chiarello, Ph.D." />
+    <script src="libs/header-attrs/header-attrs.js"></script>
+    <link href="libs/font-awesome/css/all.css" rel="stylesheet" />
+    <link href="libs/font-awesome/css/v4-shims.css" rel="stylesheet" />
+    <link href="libs/panelset/panelset.css" rel="stylesheet" />
+    <script src="libs/panelset/panelset.js"></script>
+    <script src="libs/htmlwidgets/htmlwidgets.js"></script>
+    <link href="libs/str_view/str_view.css" rel="stylesheet" />
+    <script src="libs/str_view-binding/str_view.js"></script>
+    <link rel="stylesheet" href="xaringan-themer.css" type="text/css" />
+    <link rel="stylesheet" href="slides.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# Intro to Text Mining: Strings and regular expressions
+### Filippo Chiarello, Ph.D.
+
+---
+
+
+
+
+
+layout: true
+  
+&lt;div class="my-footer"&gt;
+&lt;span&gt;
+&lt;a href="https://datasciencebox.org" target="_blank"&gt;datasciencebox.org, Filipp Chiarello ©&lt;/a&gt;
+&lt;/span&gt;
+&lt;/div&gt; 
+
+---
+
+
+
+# Tet Mining in R
+
+This chapter introduces you to string manipulation in R. You'll learn the basics of how strings work and how to create them by hand, but the focus of this chapter will be on **regular expressions**, or **regex** for short. 
+
+
+---
+
+## Load packages
+
+
+```r
+library(stringr)
+```
+
+https://www.rdocumentation.org/packages/stringr/versions/1.4.0
+
+---
+
+## String basics
+
+```r
+string = "Hello world!"
+writeLines(string)
+```
+
+```
+## Hello world!
+```
+
+```r
+# escape character "
+string = "Hello \"world\"!"
+writeLines(string)
+```
+
+```
+## Hello "world"!
+```
+
+---
+
+## String basics
+
+
+```r
+# a vector of strings
+s = c("Hello", "world", "!")
+s
+```
+
+```
+## [1] "Hello" "world" "!"
+```
+
+```r
+# string length
+str_length("Hello")
+```
+
+```
+## [1] 5
+```
+
+```r
+str_length(s)
+```
+
+```
+## [1] 5 5 1
+```
+
+---
+
+## String basics
+
+
+```r
+# combining strings
+str_c("Hello", "world!")
+```
+
+```
+## [1] "Helloworld!"
+```
+
+```r
+str_c("Hello", "world!", sep=" ")
+```
+
+```
+## [1] "Hello world!"
+```
+
+```r
+# vectorized
+str_c(c("1", "2", "3"), c("a", "b", "c"))
+```
+
+```
+## [1] "1a" "2b" "3c"
+```
+
+```r
+str_c("prefix-", c("a", "b", "c"), "-suffix")
+```
+
+```
+## [1] "prefix-a-suffix" "prefix-b-suffix" "prefix-c-suffix"
+```
+
+---
+
+## Regular expressions
+
+- Regular expressions are useful because strings usually contain unstructured or semi-structured data. 
+
+- Regexps are a concise language for describing **patterns in strings**. 
+
+- When you first look at a regexp, you'll think a *cat walked across your keyboard*, but as your understanding improves they will soon start to make sense.
+
+---
+
+## Basics
+
+Basic regular expressions are build sequences of characters, including some special characters like:
+
+* `.`: matches any character.
+* `\d`: matches any digit.
+* `\s`: matches any whitespace (e.g. space, tab, newline).
+* `[abc]`: matches a, b, or c.
+* `[^abc]`: matches anything except a, b, or c.
+* `^` matches the start of the string.
+* `$` matches the end of the string.
+
+Remember, to create a regular expression containing `\d` or `\s`, you'll need to escape the `\` for the string, so you'll type `"\\d"` or `"\\s"`.
+
+---
+
+# Regex
+
+
+```r
+# a famous sentence
+Gregory &lt;- "To move is to stir, and to be valiant is to stand: therefore, if thou art moved, thou runn'st away."
+
+# exact match
+str_view_all(Gregory, "move")
+```
+
+<div id="htmlwidget-1b4ff99564eb6e8884a5" style="width:960px;height:100%;" class="str_view html-widget"></div>
+<script type="application/json" data-for="htmlwidget-1b4ff99564eb6e8884a5">{"x":{"html":"<ul>\n  <li>To <span class='match'>move<\/span> is to stir, and to be valiant is to stand: therefore, if thou art <span class='match'>move<\/span>d, thou runn'st away.<\/li>\n<\/ul>"},"evals":[],"jsHooks":[]}</script>
+
+```r
+str_view(Gregory, "move")
+```
+
+<div id="htmlwidget-8f836166d559454ecd73" style="width:960px;height:100%;" class="str_view html-widget"></div>
+<script type="application/json" data-for="htmlwidget-8f836166d559454ecd73">{"x":{"html":"<ul>\n  <li>To <span class='match'>move<\/span> is to stir, and to be valiant is to stand: therefore, if thou art moved, thou runn'st away.<\/li>\n<\/ul>"},"evals":[],"jsHooks":[]}</script>
+
+---
+
+# Notice that matches never overlap
+
+
+```r
+str_view_all("abababa", "aba")
+```
+
+<div id="htmlwidget-0d7db73d03839427d3b7" style="width:960px;height:100%;" class="str_view html-widget"></div>
+<script type="application/json" data-for="htmlwidget-0d7db73d03839427d3b7">{"x":{"html":"<ul>\n  <li><span class='match'>aba<\/span>b<span class='match'>aba<\/span><\/li>\n<\/ul>"},"evals":[],"jsHooks":[]}</script>
+
+---
+# any character
+
+
+```r
+# any character
+str_view_all(Gregory, "m.v.")
+```
+
+<div id="htmlwidget-c2e3fede5c798441fdae" style="width:960px;height:100%;" class="str_view html-widget"></div>
+<script type="application/json" data-for="htmlwidget-c2e3fede5c798441fdae">{"x":{"html":"<ul>\n  <li>To <span class='match'>move<\/span> is to stir, and to be valiant is to stand: therefore, if thou art <span class='match'>move<\/span>d, thou runn'st away.<\/li>\n<\/ul>"},"evals":[],"jsHooks":[]}</script>
+
+---
+
+# any digit
+
+
+```r
+str_view_all("1 is not prime, but 2 is a prime!", "\\d")
+```
+
+<div id="htmlwidget-a77ad32f6b82562872f5" style="width:960px;height:100%;" class="str_view html-widget"></div>
+<script type="application/json" data-for="htmlwidget-a77ad32f6b82562872f5">{"x":{"html":"<ul>\n  <li><span class='match'>1<\/span> is not prime, but <span class='match'>2<\/span> is a prime!<\/li>\n<\/ul>"},"evals":[],"jsHooks":[]}</script>
+
+---
+
+# any whitespace
+
+```r
+str_view_all(Gregory, "u\\s")
+```
+
+<div id="htmlwidget-e3479f292a01744eb530" style="width:960px;height:100%;" class="str_view html-widget"></div>
+<script type="application/json" data-for="htmlwidget-e3479f292a01744eb530">{"x":{"html":"<ul>\n  <li>To move is to stir, and to be valiant is to stand: therefore, if tho<span class='match'>u <\/span>art moved, tho<span class='match'>u <\/span>runn'st away.<\/li>\n<\/ul>"},"evals":[],"jsHooks":[]}</script>
+
+---
+
+# any character in a set
+
+
+```r
+str_view_all(Gregory, "[aeiou]\\s")
+```
+
+<div id="htmlwidget-65b7328530dcdf303887" style="width:960px;height:100%;" class="str_view html-widget"></div>
+<script type="application/json" data-for="htmlwidget-65b7328530dcdf303887">{"x":{"html":"<ul>\n  <li>T<span class='match'>o <\/span>mov<span class='match'>e <\/span>is t<span class='match'>o <\/span>stir, and t<span class='match'>o <\/span>b<span class='match'>e <\/span>valiant is t<span class='match'>o <\/span>stand: therefore, if tho<span class='match'>u <\/span>art moved, tho<span class='match'>u <\/span>runn'st away.<\/li>\n<\/ul>"},"evals":[],"jsHooks":[]}</script>
+
+---
+# any character not in a set
+
+```r
+str_view_all(Gregory, "[^aeiou]\\s")
+```
+
+<div id="htmlwidget-1990be7a07e95fee1522" style="width:960px;height:100%;" class="str_view html-widget"></div>
+<script type="application/json" data-for="htmlwidget-1990be7a07e95fee1522">{"x":{"html":"<ul>\n  <li>To move i<span class='match'>s <\/span>to stir<span class='match'>, <\/span>an<span class='match'>d <\/span>to be valian<span class='match'>t <\/span>i<span class='match'>s <\/span>to stand<span class='match'>: <\/span>therefore<span class='match'>, <\/span>i<span class='match'>f <\/span>thou ar<span class='match'>t <\/span>moved<span class='match'>, <\/span>thou runn's<span class='match'>t <\/span>away.<\/li>\n<\/ul>"},"evals":[],"jsHooks":[]}</script>
+
+---
+# start of the string
+
+
+```r
+str_view(Gregory, "^..")
+```
+
+<div id="htmlwidget-28cf82553809b695f76c" style="width:960px;height:100%;" class="str_view html-widget"></div>
+<script type="application/json" data-for="htmlwidget-28cf82553809b695f76c">{"x":{"html":"<ul>\n  <li><span class='match'>To<\/span> move is to stir, and to be valiant is to stand: therefore, if thou art moved, thou runn'st away.<\/li>\n<\/ul>"},"evals":[],"jsHooks":[]}</script>
+
+---
+# end of the string
+
+```r
+str_view_all(Gregory, "..$")
+```
+
+<div id="htmlwidget-988252b1f4f7d9d645fb" style="width:960px;height:100%;" class="str_view html-widget"></div>
+<script type="application/json" data-for="htmlwidget-988252b1f4f7d9d645fb">{"x":{"html":"<ul>\n  <li>To move is to stir, and to be valiant is to stand: therefore, if thou art moved, thou runn'st awa<span class='match'>y.<\/span><\/li>\n<\/ul>"},"evals":[],"jsHooks":[]}</script>
+
+---
+
+### Union and repetition
+
+More complicated regular expressions are build from basic expressions using union and repetition operators:
+
+* `|`: unioun
+* `?`: 0 or 1
+* `+`: 1 or more
+* `*`: 0 or more
+
+---
+
+
+```r
+# union
+str_view_all(Gregory, "move|stand")
+```
+
+<div id="htmlwidget-13a8be463c5fb2457ee4" style="width:960px;height:100%;" class="str_view html-widget"></div>
+<script type="application/json" data-for="htmlwidget-13a8be463c5fb2457ee4">{"x":{"html":"<ul>\n  <li>To <span class='match'>move<\/span> is to stir, and to be valiant is to <span class='match'>stand<\/span>: therefore, if thou art <span class='match'>move<\/span>d, thou runn'st away.<\/li>\n<\/ul>"},"evals":[],"jsHooks":[]}</script>
+
+---
+# zero or many
+
+Notice that quantifiers are greedy because they match as many characters as possible
+
+
+```r
+CCCP &lt;- c("P", "CP", "CCP", "CCCP")
+str_view(CCCP, "CC*")
+```
+
+<div id="htmlwidget-9acb472f3bc023769b12" style="width:960px;height:100%;" class="str_view html-widget"></div>
+<script type="application/json" data-for="htmlwidget-9acb472f3bc023769b12">{"x":{"html":"<ul>\n  <li>P<\/li>\n  <li><span class='match'>C<\/span>P<\/li>\n  <li><span class='match'>CC<\/span>P<\/li>\n  <li><span class='match'>CCC<\/span>P<\/li>\n<\/ul>"},"evals":[],"jsHooks":[]}</script>
+
+---
+# one or many
+
+
+```r
+str_view(CCCP, "CC+")
+```
+
+<div id="htmlwidget-887d9d3e739065d53985" style="width:960px;height:100%;" class="str_view html-widget"></div>
+<script type="application/json" data-for="htmlwidget-887d9d3e739065d53985">{"x":{"html":"<ul>\n  <li>P<\/li>\n  <li>CP<\/li>\n  <li><span class='match'>CC<\/span>P<\/li>\n  <li><span class='match'>CCC<\/span>P<\/li>\n<\/ul>"},"evals":[],"jsHooks":[]}</script>
+
+---
+# zero or one
+
+
+```r
+str_view(CCCP, "CC?")
+```
+
+<div id="htmlwidget-54549f4c10c17d05b981" style="width:960px;height:100%;" class="str_view html-widget"></div>
+<script type="application/json" data-for="htmlwidget-54549f4c10c17d05b981">{"x":{"html":"<ul>\n  <li>P<\/li>\n  <li><span class='match'>C<\/span>P<\/li>\n  <li><span class='match'>CC<\/span>P<\/li>\n  <li><span class='match'>CC<\/span>CP<\/li>\n<\/ul>"},"evals":[],"jsHooks":[]}</script>
+
+---
+
+# exactly n
+
+
+```r
+str_view(CCCP, "C{2}")
+```
+
+<div id="htmlwidget-b4cf0a3b63a2d9e314a9" style="width:960px;height:100%;" class="str_view html-widget"></div>
+<script type="application/json" data-for="htmlwidget-b4cf0a3b63a2d9e314a9">{"x":{"html":"<ul>\n  <li>P<\/li>\n  <li>CP<\/li>\n  <li><span class='match'>CC<\/span>P<\/li>\n  <li><span class='match'>CC<\/span>CP<\/li>\n<\/ul>"},"evals":[],"jsHooks":[]}</script>
+
+---
+# at least n
+
+```r
+str_view(CCCP, "C{2,}")
+```
+
+<div id="htmlwidget-658508aa12f815ad271c" style="width:960px;height:100%;" class="str_view html-widget"></div>
+<script type="application/json" data-for="htmlwidget-658508aa12f815ad271c">{"x":{"html":"<ul>\n  <li>P<\/li>\n  <li>CP<\/li>\n  <li><span class='match'>CC<\/span>P<\/li>\n  <li><span class='match'>CCC<\/span>P<\/li>\n<\/ul>"},"evals":[],"jsHooks":[]}</script>
+
+---
+
+# between n and m
+
+```r
+str_view(CCCP, "C{2,3}")
+```
+
+<div id="htmlwidget-f06cb88fc125579d6a45" style="width:960px;height:100%;" class="str_view html-widget"></div>
+<script type="application/json" data-for="htmlwidget-f06cb88fc125579d6a45">{"x":{"html":"<ul>\n  <li>P<\/li>\n  <li>CP<\/li>\n  <li><span class='match'>CC<\/span>P<\/li>\n  <li><span class='match'>CCC<\/span>P<\/li>\n<\/ul>"},"evals":[],"jsHooks":[]}</script>
+
+---
+
+## Tools
+
+Now that you've learned the basics of regular expressions, it's time to learn how to apply them to real problems. In this section you'll learn a wide array of stringr functions that let you:
+
+* **detect** which strings match a pattern
+* **count** matches
+* **extract** the content of matches
+* **replace** matches with new values
+* **split** a string based on a match
+
+---
+
+# Detect and count
+
+
+```r
+str_detect("apple", "p")
+```
+
+```
+## [1] TRUE
+```
+
+```r
+str_count("apple", "p")
+```
+
+```
+## [1] 2
+```
+
+```r
+str_detect(c("apple", "banana", "pear"), "e")
+```
+
+```
+## [1]  TRUE FALSE  TRUE
+```
+
+```r
+str_count(c("apple", "banana", "pear"), "a")
+```
+
+```
+## [1] 1 3 1
+```
+
+---
+
+# Extract
+
+```r
+str_extract(Gregory, "mov.?")
+```
+
+```
+## [1] "move"
+```
+
+```r
+str_extract_all(Gregory, "mov.?")
+```
+
+```
+## [[1]]
+## [1] "move" "move"
+```
+---
+
+
+# Replace
+
+```r
+# replace the first match
+str_replace("apple", "[aeiou]", "-")
+```
+
+```
+## [1] "-pple"
+```
+
+```r
+# replace all matches
+str_replace_all("apple", "[aeiou]", "-")
+```
+
+```
+## [1] "-ppl-"
+```
+
+---
+
+# Split
+
+
+```r
+str_split("banana", "n")
+```
+
+```
+## [[1]]
+## [1] "ba" "a"  "a"
+```
+
+```r
+str_split(Gregory, "\\s")
+```
+
+```
+## [[1]]
+##  [1] "To"         "move"       "is"         "to"        
+##  [5] "stir,"      "and"        "to"         "be"        
+##  [9] "valiant"    "is"         "to"         "stand:"    
+## [13] "therefore," "if"         "thou"       "art"       
+## [17] "moved,"     "thou"       "runn'st"    "away."
+```
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"ratio": "16:9",
+"highlightLines": false,
+"highlightStyle": "solarized-ligth",
+"countIncrementalSlides": true
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

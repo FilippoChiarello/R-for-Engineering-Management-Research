@@ -1,0 +1,792 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Intro to Text Mining: Tidy Text</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Filippo Chiarello, Ph.D." />
+    <script src="libs/header-attrs/header-attrs.js"></script>
+    <link href="libs/font-awesome/css/all.css" rel="stylesheet" />
+    <link href="libs/font-awesome/css/v4-shims.css" rel="stylesheet" />
+    <link href="libs/panelset/panelset.css" rel="stylesheet" />
+    <script src="libs/panelset/panelset.js"></script>
+    <link rel="stylesheet" href="xaringan-themer.css" type="text/css" />
+    <link rel="stylesheet" href="slides.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# Intro to Text Mining: Tidy Text
+### Filippo Chiarello, Ph.D.
+
+---
+
+
+
+
+
+layout: true
+  
+&lt;div class="my-footer"&gt;
+&lt;span&gt;
+&lt;a href="https://datasciencebox.org" target="_blank"&gt;datasciencebox.org, Filipp Chiarello ©&lt;/a&gt;
+&lt;/span&gt;
+&lt;/div&gt; 
+
+---
+
+## Tidy text 
+
+* [tidytext](https://CRAN.R-project.org/package=tidytext) is an R package for analysing text with the [tidyverse](https://www.tidyverse.org/) philosophy
+* treating **text as data frames** of individual words allows us to manipulate, summarize, and visualize the characteristics of text easily and integrate natural language processing into effective workflows of the tidyverse
+
+
+---
+
+## One-token-per-row
+
+* we define the tidy text format as being a table with **one-token-per-row** 
+* a **token** is a meaningful unit of text, such as a word, a sentence, or paragraph, that we are interested in using for analysis
+* **tokenization** is the process of splitting text into tokens
+
+---
+
+## unnest_tokens
+
+* `unnest_tokens` is the main verb of tidytext
+* it splits text into tokens and outputs a one-token-per-row table
+* takes 3 main parameters:
+   1. tbl: a data frame containing the text to tokenize
+   2. output: the output column to be created 
+   3. input: the input column that gets split
+* punctuation is stripped
+* tokens are converted to lowercase
+* other columns, such as the line number each word came from, are retained
+
+---
+
+## unnest_tokens
+
+
+```r
+# the tidy tools
+library(tidyverse)
+```
+
+```
+## Warning: package 'tidyr' was built under R version 4.0.5
+```
+
+```
+## Warning: package 'readr' was built under R version 4.0.5
+```
+
+```
+## Warning: package 'dplyr' was built under R version 4.0.5
+```
+
+```r
+# the tidy tools for text
+library(tidytext)
+
+# Emily Dickinson wrote some lovely text in her time
+text &lt;- c("Because I could not stop for Death -",
+          "He kindly stopped for me -",
+          "The Carriage held but just Ourselves -",
+          "and Immortality")
+
+
+# a data frame with one row per sentence
+text_df &lt;- data_frame(line = 1:4, text = text)
+```
+
+```
+## Warning: `data_frame()` was deprecated in tibble 1.1.0.
+## Please use `tibble()` instead.
+## This warning is displayed once every 8 hours.
+## Call `lifecycle::last_lifecycle_warnings()` to see where this warning was generated.
+```
+
+---
+
+# Let's print the table
+
+
+```r
+text_df
+```
+
+```
+## # A tibble: 4 × 2
+##    line text                                  
+##   &lt;int&gt; &lt;chr&gt;                                 
+## 1     1 Because I could not stop for Death -  
+## 2     2 He kindly stopped for me -            
+## 3     3 The Carriage held but just Ourselves -
+## 4     4 and Immortality
+```
+
+
+---
+# tokenization: one row per word
+
+
+```r
+unnest_tokens(tbl = text_df, output = word, input = text)
+```
+
+```
+## # A tibble: 20 × 2
+##    line word   
+##   &lt;int&gt; &lt;chr&gt;  
+## 1     1 because
+## 2     1 i      
+## 3     1 could  
+## 4     1 not    
+## 5     1 stop   
+## 6     1 for    
+## # … with 14 more rows
+```
+
+
+---
+
+## Stop words and stems
+
+* **stop words** are words which are filtered out before processing of natural language data (text), such as such as *the*, *is*, *at*, *which*, *for*, *an* and *on*
+* **stemming** is the process of reducing inflected words to their word stem, base or root form. For instance, a stemming algorithm might reduce the words *fishing*, *fished*, and *fisher* to the stem *fish*
+* a popular stemmer is [Porter's stemming algorithm](https://en.wikipedia.org/wiki/Martin_Porter)
+
+---
+## Jane Austen's novels
+
+* Let's use the text of [Jane Austen](https://it.wikipedia.org/wiki/Jane_Austen)'s 6 completed, published novels from the [janeaustenr](https://cran.r-project.org/package=janeaustenr) package, and transform them into a tidy format
+* The janeaustenr package provides these texts in a **one-row-per-line** format, where a line is this context is analogous to a literal printed line in a physical book
+
+---
+
+
+## Jane Austen's novels
+
+
+```r
+library(janeaustenr)
+library(stringr)
+
+# one sentence per row
+austen_books()
+```
+
+```
+## # A tibble: 73,422 × 2
+##   text                    book               
+## * &lt;chr&gt;                   &lt;fct&gt;              
+## 1 "SENSE AND SENSIBILITY" Sense &amp; Sensibility
+## 2 ""                      Sense &amp; Sensibility
+## 3 "by Jane Austen"        Sense &amp; Sensibility
+## 4 ""                      Sense &amp; Sensibility
+## 5 "(1811)"                Sense &amp; Sensibility
+## 6 ""                      Sense &amp; Sensibility
+## # … with 73,416 more rows
+```
+
+
+---
+
+# Add line and chapter numbers relative to books
+
+
+```r
+original_books &lt;- austen_books() %&gt;%
+  group_by(book) %&gt;%
+  mutate(linenumber = row_number(),
+         chapter = cumsum(
+           str_detect(text, regex("^chapter [\\divxlc]", ignore_case = TRUE)))) %&gt;%
+  ungroup()
+
+original_books
+```
+
+```
+## # A tibble: 73,422 × 4
+##   text                    book                linenumber chapter
+##   &lt;chr&gt;                   &lt;fct&gt;                    &lt;int&gt;   &lt;int&gt;
+## 1 "SENSE AND SENSIBILITY" Sense &amp; Sensibility          1       0
+## 2 ""                      Sense &amp; Sensibility          2       0
+## 3 "by Jane Austen"        Sense &amp; Sensibility          3       0
+## 4 ""                      Sense &amp; Sensibility          4       0
+## 5 "(1811)"                Sense &amp; Sensibility          5       0
+## 6 ""                      Sense &amp; Sensibility          6       0
+## # … with 73,416 more rows
+```
+
+---
+
+# tokenize: one work per row
+
+
+```r
+tidy_books &lt;- original_books %&gt;%
+  unnest_tokens(word, text)
+
+tidy_books
+```
+
+```
+## # A tibble: 725,055 × 4
+##   book                linenumber chapter word       
+##   &lt;fct&gt;                    &lt;int&gt;   &lt;int&gt; &lt;chr&gt;      
+## 1 Sense &amp; Sensibility          1       0 sense      
+## 2 Sense &amp; Sensibility          1       0 and        
+## 3 Sense &amp; Sensibility          1       0 sensibility
+## 4 Sense &amp; Sensibility          3       0 by         
+## 5 Sense &amp; Sensibility          3       0 jane       
+## 6 Sense &amp; Sensibility          3       0 austen     
+## # … with 725,049 more rows
+```
+
+---
+
+# remove stop words
+
+
+```r
+stop_words
+```
+
+```
+## # A tibble: 1,149 × 2
+##   word      lexicon
+##   &lt;chr&gt;     &lt;chr&gt;  
+## 1 a         SMART  
+## 2 a's       SMART  
+## 3 able      SMART  
+## 4 about     SMART  
+## 5 above     SMART  
+## 6 according SMART  
+## # … with 1,143 more rows
+```
+
+```r
+tidy_books &lt;- tidy_books %&gt;%
+  anti_join(stop_words)
+```
+
+---
+
+# word frequency
+
+
+```r
+tidy_books %&gt;%
+  count(word, sort = TRUE) 
+```
+
+```
+## # A tibble: 13,914 × 2
+##   word      n
+##   &lt;chr&gt; &lt;int&gt;
+## 1 miss   1855
+## 2 time   1337
+## 3 fanny   862
+## 4 dear    822
+## 5 lady    817
+## 6 sir     806
+## # … with 13,908 more rows
+```
+
+---
+
+# plot word frequency
+
+
+```r
+tidy_books %&gt;%
+  count(word, sort = TRUE) %&gt;%
+  filter(n &gt; 600) %&gt;%
+  # reorder levels of factor word wrt n
+  mutate(word = reorder(word, n)) %&gt;%
+  ggplot(aes(word, n)) +
+  geom_col() +
+  xlab(NULL) +
+  coord_flip() +
+  theme_bw()
+```
+
+&lt;img src="8-tidy_text_files/figure-html/unnamed-chunk-10-1.png" width="60%" style="display: block; margin: auto;" /&gt;
+
+---
+
+# wordcloud
+
+
+```r
+library(wordcloud)
+
+tidy_books %&gt;%
+  count(word) %&gt;%
+  # evaluate an R expression in an environment constructed from data
+  with(wordcloud(word, n, max.words = 100))
+```
+
+&lt;img src="8-tidy_text_files/figure-html/unnamed-chunk-11-1.png" width="60%" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Porter's word stemming
+
+
+```r
+library(SnowballC)
+tidy_books &lt;- tidy_books %&gt;%
+  mutate(word = wordStem(word)) # stemming
+
+tidy_books
+```
+
+```
+## # A tibble: 217,609 × 4
+##   book                linenumber chapter word   
+##   &lt;fct&gt;                    &lt;int&gt;   &lt;int&gt; &lt;chr&gt;  
+## 1 Sense &amp; Sensibility          1       0 sens   
+## 2 Sense &amp; Sensibility          1       0 sensibl
+## 3 Sense &amp; Sensibility          3       0 jane   
+## 4 Sense &amp; Sensibility          3       0 austen 
+## 5 Sense &amp; Sensibility          5       0 1811   
+## 6 Sense &amp; Sensibility         10       1 chapter
+## # … with 217,603 more rows
+```
+
+---
+
+# plot word frequency
+
+
+```r
+tidy_books %&gt;%
+  count(word, sort = TRUE) %&gt;%
+  filter(n &gt; 600) %&gt;%
+  mutate(word = reorder(word, n)) %&gt;%
+  ggplot(aes(word, n)) +
+  geom_col() +
+  xlab(NULL) +
+  coord_flip() +
+  theme_bw()
+```
+
+&lt;img src="8-tidy_text_files/figure-html/unnamed-chunk-13-1.png" width="60%" style="display: block; margin: auto;" /&gt;
+
+---
+
+# tokenize by pattern (with regular expression)
+
+
+```r
+austen_chapters &lt;- austen_books() %&gt;%
+  group_by(book) %&gt;%
+  unnest_tokens(chapter, text, 
+                token = "regex", 
+                pattern = "(Chapter|CHAPTER) [\\dIVXLC]{1,8}") %&gt;%
+  ungroup()
+```
+
+---
+
+# how many chapters in each book?
+
+
+```r
+austen_chapters %&gt;% 
+  group_by(book) %&gt;% 
+  summarise(chapters = n()) %&gt;% 
+  arrange(-chapters)
+```
+
+```
+## # A tibble: 6 × 2
+##   book                chapters
+##   &lt;fct&gt;                  &lt;int&gt;
+## 1 Pride &amp; Prejudice         62
+## 2 Emma                      56
+## 3 Sense &amp; Sensibility       51
+## 4 Mansfield Park            49
+## 5 Northanger Abbey          32
+## 6 Persuasion                25
+```
+
+---
+
+## Project Gutenberg
+
+* now that we've used the `janeaustenr` package to explore tidying text, let's introduce the [gutenbergr](https://github.com/ropenscilabs/gutenbergr) package 
+* the `gutenbergr` package provides access to the public domain works from the [Project Gutenberg](https://www.gutenberg.org/) collection
+* we will mostly use the function `gutenberg_download()` that downloads one or more works from Project Gutenberg by ID
+
+---
+
+## Project Gutenberg - H.G. Wells
+
+Let's look at some science fiction and fantasy novels by [H.G. Wells](https://it.wikipedia.org/wiki/H._G._Wells), who lived in the late 19th and early 20th centuries. Let's get:
+
+&gt;* [*The Time Machine*](https://www.gutenberg.org/ebooks/35)
+&gt;* [*The War of the Worlds*](https://www.gutenberg.org/ebooks/36)
+&gt;* [*The Invisible Man*](https://www.gutenberg.org/ebooks/5230) 
+&gt;* [*The Island of Doctor Moreau*](https://www.gutenberg.org/ebooks/159)
+
+---
+
+Download the [RDS file](hgwells.rds).
+
+
+```r
+library(gutenbergr)
+
+# run once and save the result as RDS
+#hgwells &lt;- gutenberg_download(c(35, 36, 5230, 159))
+#write_rds(hgwells, "hgwells.rds")
+
+# read from RDS
+hgwells = read_rds("hgwells.rds")
+hgwells
+```
+
+```
+## # A tibble: 20,020 × 2
+##   gutenberg_id text              
+##          &lt;int&gt; &lt;chr&gt;             
+## 1           35 "The Time Machine"
+## 2           35 ""                
+## 3           35 "An Invention"    
+## 4           35 ""                
+## 5           35 "by H. G. Wells"  
+## 6           35 ""                
+## # … with 20,014 more rows
+```
+
+---
+--- 
+
+
+
+```r
+tidy_hgwells &lt;- hgwells %&gt;%
+  unnest_tokens(word, text) %&gt;%
+  anti_join(stop_words)
+
+tidy_hgwells %&gt;%
+  count(word, sort = TRUE)
+```
+
+```
+## # A tibble: 11,811 × 2
+##   word       n
+##   &lt;chr&gt;  &lt;int&gt;
+## 1 time     461
+## 2 people   302
+## 3 door     260
+## 4 heard    249
+## 5 black    232
+## 6 stood    229
+## # … with 11,805 more rows
+```
+
+
+---
+
+
+## Project Gutenberg - Bronte sisters
+
+Now let's get some well-known works of the [Bronte sisters](https://it.wikipedia.org/wiki/Sorelle_Bront%C3%AB), whose lives overlapped with Jane Austen's somewhat but who wrote in a rather different style. Let's get: 
+
+&gt;* [*Jane Eyre*](https://www.gutenberg.org/ebooks/1260) 
+&gt;* [*Wuthering Heights*](https://www.gutenberg.org/ebooks/768) 
+&gt;* [*The Tenant of Wildfell Hall*](https://www.gutenberg.org/ebooks/969) 
+&gt;* [*Villette*](https://www.gutenberg.org/ebooks/9182) 
+&gt;* [*Agnes Grey*](https://www.gutenberg.org/ebooks/767)
+
+---
+
+Download the [RDS file](bronte.rds).
+
+
+```r
+# run once and save the result as RDS
+# bronte &lt;- gutenberg_download(c(1260, 768, 969, 9182, 767))
+# write_rds(bronte, "bronte.rds")
+
+# read from RDS
+bronte = read_rds("bronte.rds")
+bronte
+```
+
+```
+## # A tibble: 80,117 × 2
+##   gutenberg_id text            
+##          &lt;int&gt; &lt;chr&gt;           
+## 1          767 "Agnes Grey"    
+## 2          767 "A NOVEL,"      
+## 3          767 ""              
+## 4          767 "by ACTON BELL."
+## 5          767 ""              
+## 6          767 "LONDON:"       
+## # … with 80,111 more rows
+```
+
+---
+
+
+```r
+tidy_bronte &lt;- bronte %&gt;%
+  unnest_tokens(word, text) %&gt;%
+  anti_join(stop_words)
+
+tidy_bronte %&gt;%
+  count(word, sort = TRUE)
+```
+
+```
+## # A tibble: 23,297 × 2
+##   word      n
+##   &lt;chr&gt; &lt;int&gt;
+## 1 time   1065
+## 2 miss    854
+## 3 day     825
+## 4 hand    767
+## 5 eyes    714
+## 6 don’t   666
+## # … with 23,291 more rows
+```
+
+Interesting that "time", "eyes", and "hand" are in the top 10 for both H.G. Wells and the Bronte sisters.
+
+---
+
+## Compare words used by Jane Austen and the Bronte sisters
+
+
+```r
+frequency &lt;- 
+  bind_rows(mutate(tidy_bronte, author = "Bronte Sisters"),
+                       mutate(tidy_hgwells, author = "H.G. Wells"), 
+                       mutate(tidy_books, author = "Jane Austen")) %&gt;% 
+  mutate(word = str_extract(word, "[a-z']+")) %&gt;%
+  count(author, word) %&gt;%
+  group_by(author) %&gt;%
+  mutate(proportion = n / sum(n)) %&gt;% 
+  select(-n) %&gt;% 
+  spread(author, proportion) 
+
+frequency
+```
+
+```
+## # A tibble: 30,292 × 4
+##   word      `Bronte Sisters` `H.G. Wells` `Jane Austen`
+##   &lt;chr&gt;                &lt;dbl&gt;        &lt;dbl&gt;         &lt;dbl&gt;
+## 1 a               0.0000587     0.0000147    0.0000138 
+## 2 a'n't          NA            NA            0.00000460
+## 3 aback           0.00000391    0.0000147   NA         
+## 4 abaht           0.00000391   NA           NA         
+## 5 abandon         0.0000313     0.0000147    0.00000460
+## 6 abandoned       0.0000900     0.000177    NA         
+## # … with 30,286 more rows
+```
+
+---
+# About str_extract()
+
+We use `str_extract()` here because the UTF-8 encoded texts from Project Gutenberg have some examples of words with 
+underscores around them to indicate emphasis (like italics). 
+
+---
+
+## Compare words used by Jane Austen, the Bronte sisters, and H.G. Wells
+
+Let's comparing the word frequencies of Jane Austen, the Bronte sisters, and H.G. Wells:
+
+
+```r
+library(scales)
+
+# correlate frequencies of words in `BrontÃ« Sisters` and `Jane Austen` books
+# expect a warning about rows with missing values being removed
+graph &lt;- ggplot(frequency, aes(x = `Bronte Sisters`, y = `Jane Austen`)) +
+  geom_abline(color = "gray40", lty = 2) +
+  geom_text(aes(label = word), check_overlap = TRUE, vjust = 1.5) +
+  scale_x_log10(labels = percent_format()) +
+  scale_y_log10(labels = percent_format()) +
+  labs(y = "Jane Austen", x = "Bronte Sisters") +
+  theme_bw()
+```
+
+---
+
+
+```r
+graph
+```
+
+```
+## Warning: Removed 26810 rows containing missing values
+## (geom_text).
+```
+
+&lt;img src="8-tidy_text_files/figure-html/unnamed-chunk-22-1.png" width="60%" style="display: block; margin: auto;" /&gt;
+
+---
+
+
+## Compare words used by Jane Austen, the Bronte sisters, and H.G. Wells
+
+Let's quantify how similar and different these sets of word frequencies are using a correlation test. How correlated are the word frequencies between Austen and the Bronte sisters, and between Austen and Wells?
+
+
+```r
+# quantify correlation
+cor.test(frequency$`Bronte Sisters`,  frequency$`Jane Austen`)
+```
+
+```
+## 
+## 	Pearson's product-moment correlation
+## 
+## data:  frequency$`Bronte Sisters` and frequency$`Jane Austen`
+## t = 50.908, df = 3481, p-value &lt; 2.2e-16
+## alternative hypothesis: true correlation is not equal to 0
+## 95 percent confidence interval:
+##  0.6338151 0.6719097
+## sample estimates:
+##       cor 
+## 0.6532757
+```
+
+---
+
+
+```r
+cor.test(frequency$`H.G. Wells`,  frequency$`Jane Austen`)
+```
+
+```
+## 
+## 	Pearson's product-moment correlation
+## 
+## data:  frequency$`H.G. Wells` and frequency$`Jane Austen`
+## t = 17.393, df = 2296, p-value &lt; 2.2e-16
+## alternative hypothesis: true correlation is not equal to 0
+## 95 percent confidence interval:
+##  0.3045576 0.3768308
+## sample estimates:
+##       cor 
+## 0.3411984
+```
+
+Just as we saw in the plots, the word frequencies are more correlated between the Austen and Bronte novels than between Austen and H.G. Wells.
+
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"ratio": "16:9",
+"highlightLines": false,
+"highlightStyle": "solarized-ligth",
+"countIncrementalSlides": true
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

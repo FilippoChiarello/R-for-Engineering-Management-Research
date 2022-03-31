@@ -1,0 +1,303 @@
+---
+title: "Intro to Text Mining: Strings and regular expressions"
+subtitle: ""
+author: "Filippo Chiarello, Ph.D."
+output:
+  xaringan::moon_reader:
+    css: ["xaringan-themer.css", "slides.css"]
+    lib_dir: libs
+    anchor_sections: FALSE
+    nature:
+      ratio: "16:9"
+      highlightLines: false
+      highlightStyle: solarized-ligth
+      countIncrementalSlides: true
+---
+
+```{r child = "../setup.Rmd"}
+```
+
+```{r packages, echo = FALSE, message=FALSE, warning=FALSE}
+library(tidyverse)
+library(rvest)
+library(DT)
+```
+
+# Tet Mining in R
+
+This chapter introduces you to string manipulation in R. You'll learn the basics of how strings work and how to create them by hand, but the focus of this chapter will be on **regular expressions**, or **regex** for short. 
+
+
+---
+
+## Load packages
+
+```{r load}
+library(stringr)
+```
+
+https://www.rdocumentation.org/packages/stringr/versions/1.4.0
+
+---
+
+## String basics
+```{r basics}
+string = "Hello world!"
+writeLines(string)
+
+# escape character "
+string = "Hello \"world\"!"
+writeLines(string)
+```
+
+---
+
+## String basics
+
+```{r basics2}
+
+# a vector of strings
+s = c("Hello", "world", "!")
+s
+
+# string length
+str_length("Hello")
+str_length(s)
+```
+
+---
+
+## String basics
+
+```{r basics3}
+# combining strings
+str_c("Hello", "world!")
+str_c("Hello", "world!", sep=" ")
+
+# vectorized
+str_c(c("1", "2", "3"), c("a", "b", "c"))
+str_c("prefix-", c("a", "b", "c"), "-suffix")
+
+```
+
+---
+
+## Regular expressions
+
+- Regular expressions are useful because strings usually contain unstructured or semi-structured data. 
+
+- Regexps are a concise language for describing **patterns in strings**. 
+
+- When you first look at a regexp, you'll think a *cat walked across your keyboard*, but as your understanding improves they will soon start to make sense.
+
+---
+
+## Basics
+
+Basic regular expressions are build sequences of characters, including some special characters like:
+
+* `.`: matches any character.
+* `\d`: matches any digit.
+* `\s`: matches any whitespace (e.g. space, tab, newline).
+* `[abc]`: matches a, b, or c.
+* `[^abc]`: matches anything except a, b, or c.
+* `^` matches the start of the string.
+* `$` matches the end of the string.
+
+Remember, to create a regular expression containing `\d` or `\s`, you'll need to escape the `\` for the string, so you'll type `"\\d"` or `"\\s"`.
+
+---
+
+# Regex
+
+```{r regexp1}
+
+# a famous sentence
+Gregory <- "To move is to stir, and to be valiant is to stand: therefore, if thou art moved, thou runn'st away."
+
+# exact match
+str_view_all(Gregory, "move")
+str_view(Gregory, "move")
+```
+
+---
+
+# Notice that matches never overlap
+
+```{r regexp2}
+str_view_all("abababa", "aba")
+```
+
+---
+# any character
+
+```{r regexp3}
+# any character
+str_view_all(Gregory, "m.v.")
+```
+
+---
+
+# any digit
+
+```{r}
+
+str_view_all("1 is not prime, but 2 is a prime!", "\\d")
+
+```
+
+---
+
+# any whitespace
+```{r}
+str_view_all(Gregory, "u\\s")
+```
+
+---
+
+# any character in a set
+
+```{r}
+str_view_all(Gregory, "[aeiou]\\s")
+```
+
+---
+# any character not in a set
+```{r}
+str_view_all(Gregory, "[^aeiou]\\s")
+```
+
+---
+# start of the string
+
+```{r}
+str_view(Gregory, "^..")
+```
+
+---
+# end of the string
+```{r}
+
+str_view_all(Gregory, "..$")
+```
+
+---
+
+### Union and repetition
+
+More complicated regular expressions are build from basic expressions using union and repetition operators:
+
+* `|`: unioun
+* `?`: 0 or 1
+* `+`: 1 or more
+* `*`: 0 or more
+
+---
+
+```{r}
+# union
+str_view_all(Gregory, "move|stand")
+```
+
+---
+# zero or many
+
+Notice that quantifiers are greedy because they match as many characters as possible
+
+```{r}
+
+CCCP <- c("P", "CP", "CCP", "CCCP")
+str_view(CCCP, "CC*")
+
+```
+
+---
+# one or many
+
+```{r}
+str_view(CCCP, "CC+")
+
+```
+
+---
+# zero or one
+
+```{r}
+str_view(CCCP, "CC?")
+```
+
+---
+
+# exactly n
+
+```{r}
+str_view(CCCP, "C{2}")
+```
+
+---
+# at least n
+```{r}
+str_view(CCCP, "C{2,}")
+```
+
+---
+
+# between n and m
+```{r}
+str_view(CCCP, "C{2,3}")
+```
+
+---
+
+## Tools
+
+Now that you've learned the basics of regular expressions, it's time to learn how to apply them to real problems. In this section you'll learn a wide array of stringr functions that let you:
+
+* **detect** which strings match a pattern
+* **count** matches
+* **extract** the content of matches
+* **replace** matches with new values
+* **split** a string based on a match
+
+---
+
+# Detect and count
+
+```{r detect}
+str_detect("apple", "p")
+str_count("apple", "p")
+
+str_detect(c("apple", "banana", "pear"), "e")
+str_count(c("apple", "banana", "pear"), "a")
+
+```
+
+---
+
+# Extract
+```{r extract}
+str_extract(Gregory, "mov.?")
+str_extract_all(Gregory, "mov.?")
+```
+---
+
+
+# Replace
+```{r replace}
+# replace the first match
+str_replace("apple", "[aeiou]", "-")
+
+# replace all matches
+str_replace_all("apple", "[aeiou]", "-")
+
+```
+
+---
+
+# Split
+
+```{r split}
+str_split("banana", "n")
+str_split(Gregory, "\\s")
+
+```

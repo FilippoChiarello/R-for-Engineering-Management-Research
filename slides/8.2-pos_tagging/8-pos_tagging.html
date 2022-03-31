@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>POS-tagging with UDPipe</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Filippo Chiarello, Ph.D." />
+    <script src="libs/header-attrs/header-attrs.js"></script>
+    <link href="libs/font-awesome/css/all.css" rel="stylesheet" />
+    <link href="libs/font-awesome/css/v4-shims.css" rel="stylesheet" />
+    <link href="libs/panelset/panelset.css" rel="stylesheet" />
+    <script src="libs/panelset/panelset.js"></script>
+    <link rel="stylesheet" href="xaringan-themer.css" type="text/css" />
+    <link rel="stylesheet" href="slides.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# POS-tagging with UDPipe
+### Filippo Chiarello, Ph.D.
+
+---
+
+
+
+
+
+layout: true
+  
+&lt;div class="my-footer"&gt;
+&lt;span&gt;
+&lt;a href="https://datasciencebox.org" target="_blank"&gt;datasciencebox.org, Filipp Chiarello ©&lt;/a&gt;
+&lt;/span&gt;
+&lt;/div&gt; 
+
+---
+
+# UDPipe Introduction
+- [UDPipe](http://ufal.mff.cuni.cz/udpipe, https://github.com/ufal/udpipe) is an R package which is an Rcpp wrapper around the UDPipe C++ library
+
+- UDPipe provides language-agnostic tokenization, tagging, lemmatization and dependency parsing of raw text, which is an essential part in natural language processing.
+
+- The techniques used are explained in detail in the paper: "Tokenizing, POS Tagging, Lemmatizing and Parsing UD 2.0 with UDPipe", available at http://ufal.mff.cuni.cz/~straka/papers/2017-conll_udpipe.pdf. I
+
+- In that paper, you'll also find accuracies on different languages and process flow speed (measured in words per second).
+
+---
+
+# General Features 
+
+The udpipe R package was designed with the following things in mind when building the Rcpp wrapper around the UDPipe C++ library:
+
+- Give R users simple access in order to easily tokenize, tag, lemmatize or perform dependency parsing on text in any language
+- Provide easy access to pre-trained annotation models
+- Allow R users to easily construct your own annotation model based on data in CONLL-U format as provided in more than 100 treebanks available at http://universaldependencies.org/#ud-treebanks
+- Don't rely on Python or Java so that R users can easily install this package without configuration hassle
+- No external R package dependencies except the strict necessary (Rcpp and data.table, no tidyverse)
+
+---
+
+# Installation &amp; License
+
+The package is available under the Mozilla Public License Version 2.0. Installation can be done as follows. Please visit the package documentation at https://bnosac.github.io/udpipe/en and look at the R package vignettes for further details.
+
+
+```r
+# install.packages("udpipe")
+# vignette("udpipe-tryitout", package = "udpipe")
+# vignette("udpipe-annotation", package = "udpipe")
+# vignette("udpipe-universe", package = "udpipe")
+# vignette("udpipe-usecase-postagging-lemmatisation", package = "udpipe")
+# # An overview of keyword extraction techniques: https://bnosac.github.io/udpipe/docs/doc7.html
+# vignette("udpipe-usecase-topicmodelling", package = "udpipe")
+# vignette("udpipe-parallel", package = "udpipe")
+# vignette("udpipe-train", package = "udpipe")
+```
+
+---
+
+# A first example
+
+Currently the package allows you to do tokenisation, tagging, lemmatization and dependency parsing with one convenient function called udpipe.
+
+
+```r
+library(udpipe)
+```
+
+```
+## Warning: package 'udpipe' was built under R version 4.0.5
+```
+
+```r
+udmodel &lt;- udpipe_download_model(language = "english")
+# udmodel
+
+x &lt;- udpipe(x = "Competitive intelligence (CI) is the process and forward-looking 
+            practices used in producing knowledge about the competitive environment
+            to improve organizational performance.",
+            object = udmodel)
+```
+
+---
+
+# Inspect the content
+
+
+```r
+str(x)
+```
+
+```
+## 'data.frame':	26 obs. of  17 variables:
+##  $ doc_id       : chr  "doc1" "doc1" "doc1" "doc1" ...
+##  $ paragraph_id : int  1 1 1 1 1 1 1 1 1 1 ...
+##  $ sentence_id  : int  1 1 1 1 1 1 1 1 1 1 ...
+##  $ sentence     : chr  "Competitive intelligence (CI) is the process and forward-looking practices used in producing knowledge about th"| __truncated__ "Competitive intelligence (CI) is the process and forward-looking practices used in producing knowledge about th"| __truncated__ "Competitive intelligence (CI) is the process and forward-looking practices used in producing knowledge about th"| __truncated__ "Competitive intelligence (CI) is the process and forward-looking practices used in producing knowledge about th"| __truncated__ ...
+##  $ start        : int  1 13 26 27 29 31 34 38 46 50 ...
+##  $ end          : int  11 24 26 28 29 32 36 44 48 56 ...
+##  $ term_id      : int  1 2 3 4 5 6 7 8 9 10 ...
+##  $ token_id     : chr  "1" "2" "3" "4" ...
+##  $ token        : chr  "Competitive" "intelligence" "(" "CI" ...
+##  $ lemma        : chr  "competitive" "intelligence" "(" "CI" ...
+##  $ upos         : chr  "ADJ" "NOUN" "PUNCT" "PROPN" ...
+##  $ xpos         : chr  "JJ" "NN" "-LRB-" "NNP" ...
+##  $ feats        : chr  "Degree=Pos" "Number=Sing" NA "Number=Sing" ...
+##  $ head_token_id: chr  "2" "8" "2" "2" ...
+##  $ dep_rel      : chr  "amod" "nsubj" "punct" "appos" ...
+##  $ deps         : chr  NA NA NA NA ...
+##  $ misc         : chr  NA NA "SpaceAfter=No" "SpaceAfter=No" ...
+```
+
+
+
+---
+# Pre-trained models
+
+- Pre-trained models build on Universal Dependencies treebanks are made available for more than 65 languages based on 101 treebanks. 
+
+- These have been made available easily to users of the package by using udpipe_download_model
+
+---
+
+# How good are these models?
+- Accuracy statistics of models provided by the UDPipe authors which you download with udpipe_download_model from the default repository are available at this link.
+
+- Accuracy statistics of models trained using this R package which you download with udpipe_download_model from the bnosac/udpipe.models.ud repository are available at https://github.com/bnosac/udpipe.models.ud.
+
+- For a comparison between UDPipe and spaCy visit https://github.com/jwijffels/udpipe-spacy-comparison
+
+---
+
+# UDPipe - Basic Analytics
+
+In order to get the most out of the package, let's enumerate a few things one can now easily do with your text annotated using the udpipe package using merely the Parts of Speech tags &amp; the Lemma of each word.
+
+## Improved exploratory text visualisations
+- Due to richer features
+- Allowing to select easily words which you like to plot (e.g. nouns/adjectives or the subject of the text)
+- look for co-occurrences between words which are relevant based on the POS tag
+- look for correlations between words which are relevant based on the POS tag
+
+---
+
+## Easy summarisation of text
+- automatic keyword detection
+- noun phrase extraction or chunking
+- automatic text summarisation (e.g. using the textrank R package)
+
+---
+
+## Improved topic modelling by
+- taking only words with specific parts-of-speech tags in the topic model
+- automation of topic modelling for all languages by using the right pos tags instead of working with stopwords
+- using lemmatisation as a better replacement than stemming in topic modelling
+
+---
+
+## Further processing
+- Improved sentence or document similarities by using only the words of a specific POS tag
+- Identification of authors based on grammatical patterns used
+
+---
+
+# Let's Apply the tools
+
+Let's start by reading some text. We have a set of  patents on AI.
+
+
+```r
+library(udpipe)
+library(tidyverse)
+```
+
+```
+## Warning: package 'tidyr' was built under R version 4.0.5
+```
+
+```
+## Warning: package 'readr' was built under R version 4.0.5
+```
+
+```
+## Warning: package 'dplyr' was built under R version 4.0.5
+```
+
+```r
+# Read in the folder of txt, saving in list_of_files all the names of the file we want to read
+list_of_files &lt;- list.files(path = "AI_patents_2020_2021_claim/",
+                            pattern = "\\.txt$", 
+                            full.names = TRUE)
+```
+
+---
+
+
+```r
+# set how many patents we want to read (for time purposes)
+n_patents &lt;- 100
+
+# Create an empty tibble, that will store all the information
+patents &lt;-tibble(id = rep("", n_patents), 
+                 title = rep("", n_patents), 
+                 abstract = rep("", n_patents))
+```
+
+---
+
+# Read in all files from a folder
+
+
+```r
+for(i in 1:n_patents){
+  
+  raw_text &lt;- read_file(list_of_files[[i]])
+  
+  patents[[i, 1]] &lt;- str_remove_all(string = list_of_files[[i]], 
+                                pattern = "AI_patents_2020_2021_claim//|.txt")
+  
+  patents[[i, 2]] &lt;- str_extract(string = raw_text, 
+                                pattern = "&lt;title&gt;\n(.*?)\n&lt;/title&gt;") %&gt;% 
+    str_remove_all("&lt;title&gt;\n|\n&lt;/title&gt;")
+  
+  patents[[i, 3]] &lt;- str_extract(string = raw_text, 
+                                pattern = "&lt;abstract&gt;\n(.*?)\n&lt;/abstract&gt;") %&gt;% 
+    str_remove_all("&lt;abstract&gt;\n|\n&lt;/abstract&gt;")
+  
+}
+```
+
+---
+
+# Have a look at the table
+
+
+```r
+head(patents)
+```
+
+```
+## # A tibble: 6 × 3
+##   id           title                                     abstract
+##   &lt;chr&gt;        &lt;chr&gt;                                     &lt;chr&gt;   
+## 1 EP1712182_B1 Method of ultrasonic detection and local… A metho…
+## 2 EP1941301_B1 SYSTEM AND METHODS FOR ENHANCING AN IMAG… A syste…
+## 3 EP2126563_B1 METHOD FOR DETERMINING HEALTH STATUS BY … A metho…
+## 4 EP2169547_B1 Compilation model for programmable logic… The cla…
+## 5 EP2240878_B1 IDENTIFICATION AND VERIFICATION OF AN UN… Techniq…
+## 6 EP2252889_B1 METHOD AND SYSTEM FOR ANALYSIS OF FLOW C… An auto…
+```
+
+---
+
+# Tag the text
+
+
+```r
+ud_model &lt;- udpipe_download_model(language = "english")
+ud_model &lt;- udpipe_load_model(ud_model$file_model)
+
+patents_tagged &lt;- udpipe_annotate(ud_model, x = patents$abstract, doc_id = patents$id) %&gt;% 
+  as_tibble()
+```
+
+---
+
+# Inspect the results 
+
+The resulting data.frame has a field called upos which is the Universal Parts of Speech tag and also a field called lemma which is the root form of each token in the text. These 2 fields give us a broad range of analytical possibilities.
+
+
+```r
+head(patents_tagged)
+```
+
+```
+## # A tibble: 6 × 14
+##   doc_id   paragraph_id sentence_id sentence token_id token lemma
+##   &lt;chr&gt;           &lt;int&gt;       &lt;int&gt; &lt;chr&gt;    &lt;chr&gt;    &lt;chr&gt; &lt;chr&gt;
+## 1 EP17121…            1           1 A metho… 1        A     a    
+## 2 EP17121…            1           1 A metho… 2        meth… meth…
+## 3 EP17121…            1           1 A metho… 3        of    of   
+## 4 EP17121…            1           1 A metho… 4        ultr… ultr…
+## 5 EP17121…            1           1 A metho… 5        dete… dete…
+## 6 EP17121…            1           1 A metho… 6        and   and  
+## # … with 7 more variables: upos &lt;chr&gt;, xpos &lt;chr&gt;, feats &lt;chr&gt;,
+## #   head_token_id &lt;chr&gt;, dep_rel &lt;chr&gt;, deps &lt;chr&gt;, misc &lt;chr&gt;
+```
+
+---
+
+# Basic frequency statistics
+
+In most languages, nouns (NOUN) are the most common types of words, next to verbs (VERB) and these are the most relevant for analytical purposes, next to the adjectives (ADJ) and proper nouns (PROPN). 
+
+For a detailed list of all POS tags: visit https://universaldependencies.org/u/pos/index.html.
+
+---
+
+
+```r
+patents_tagged %&gt;% 
+  count(upos) %&gt;% 
+  ggplot(aes(x = reorder(upos, n), y = n)) +
+  geom_bar(stat = "identity") +
+  coord_flip() +
+  xlab("") +
+  theme_bw()
+```
+
+&lt;img src="8-pos_tagging_files/figure-html/unnamed-chunk-11-1.png" width="60%" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Using POS to filter
+
+Parts of Speech tags are really interesting to extract easily the words you like to plot. You really don't need stopwords for doing this, just select nouns / verbs or adjectives and you have already the most relevant parts for basic frequency analysis.
+
+
+```r
+graph_noun &lt;- patents_tagged %&gt;% 
+  filter(upos == "NOUN") %&gt;% 
+  count(lemma) %&gt;% 
+  filter(n &gt; 30) %&gt;% 
+  ggplot(aes(x = reorder(lemma, n), y = n)) +
+  geom_bar(stat = "identity") +
+  coord_flip() +
+  xlab("") +
+  theme_bw()
+```
+
+---
+
+
+```r
+graph_noun
+```
+
+&lt;img src="8-pos_tagging_files/figure-html/unnamed-chunk-13-1.png" width="60%" style="display: block; margin: auto;" /&gt;
+
+---
+
+
+```r
+graph_adj &lt;- patents_tagged %&gt;% 
+  filter(upos == "ADJ") %&gt;% 
+  count(lemma) %&gt;% 
+  filter(n &gt; 10) %&gt;% 
+  ggplot(aes(x = reorder(lemma, n), y = n)) +
+  geom_bar(stat = "identity") +
+  coord_flip() +
+  xlab("") +
+  theme_bw()
+```
+
+---
+
+
+```r
+graph_adj
+```
+
+&lt;img src="8-pos_tagging_files/figure-html/unnamed-chunk-15-1.png" width="60%" style="display: block; margin: auto;" /&gt;
+
+---
+
+
+```r
+graph_vb &lt;- patents_tagged %&gt;% 
+  filter(upos == "VERB") %&gt;% 
+  count(lemma) %&gt;% 
+  filter(n &gt; 30) %&gt;% 
+  ggplot(aes(x = reorder(lemma, n), y = n)) +
+  geom_bar(stat = "identity") +
+  coord_flip() +
+  xlab("") +
+  theme_bw()
+```
+
+---
+
+
+```r
+graph_vb
+```
+
+&lt;img src="8-pos_tagging_files/figure-html/unnamed-chunk-17-1.png" width="60%" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Finding keywords
+
+Frequency statistics of words are nice but most of the time, you are getting stuck in words which only make sense in combination with other words. This is typical of technical documents, where the most of the key concepts are multi-words. Hence you want to find keywords which are a combination of words.
+
+Currently, udpipe provides 3 methods to identify keywords in text:
+
+- RAKE (Rapid Automatic Keyword Extraction)
+- Collocation ordering using Pointwise Mutual Information
+- Parts of Speech phrase sequence detection
+
+---
+
+## Using RAKE
+
+
+```r
+pat_stats &lt;- keywords_rake(x = patents_tagged, term = "lemma", group = "doc_id", 
+                       relevant = patents_tagged$upos %in% c("NOUN", "ADJ")) %&gt;% 
+  as_tibble()
+
+head(pat_stats)
+```
+
+```
+## # A tibble: 6 × 4
+##   keyword                 ngram  freq  rake
+##   &lt;chr&gt;                   &lt;int&gt; &lt;int&gt; &lt;dbl&gt;
+## 1 negative pressure           2     5  5.39
+## 2 wound site                  2     2  4.38
+## 3 facial expression           2     2  4   
+## 4 hybrid control              2     2  3.5 
+## 5 feature vector              2     7  3.43
+## 6 physical characteristic     2     2  3.28
+```
+
+---
+
+
+```r
+pat_stats %&gt;% 
+  top_n(10, rake) %&gt;% 
+  ggplot(aes(x = reorder(keyword, rake), y = rake)) +
+  geom_bar(stat = "identity") +
+  coord_flip() +
+  xlab("") +
+  theme_bw()
+```
+
+&lt;img src="8-pos_tagging_files/figure-html/unnamed-chunk-19-1.png" width="60%" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Using Pointwise Mutual Information Collocations
+
+
+```r
+patents_tagged$word &lt;- tolower(patents_tagged$token)
+pat_stats &lt;- keywords_collocation(x = patents_tagged, term = "word", group = "doc_id")
+pat_stats$key &lt;- factor(pat_stats$keyword, levels = rev(pat_stats$keyword))
+
+head(pat_stats)
+```
+
+```
+##                 keyword ngram           left    right freq
+## 1           binary file     2         binary     file    3
+## 2     personal hygienic     2       personal hygienic    3
+## 3                 220 j     2            220        j    3
+## 4      tracked skeleton     2        tracked skeleton    3
+## 5 electronically stored     2 electronically   stored    3
+## 6          relief valve     2         relief    valve    3
+##   freq_left freq_right     pmi md     lfmd                   key
+## 1         3          3 12.0388  0 -12.0388           binary file
+## 2         3          3 12.0388  0 -12.0388     personal hygienic
+## 3         3          3 12.0388  0 -12.0388                 220 j
+## 4         3          3 12.0388  0 -12.0388      tracked skeleton
+## 5         3          3 12.0388  0 -12.0388 electronically stored
+## 6         3          3 12.0388  0 -12.0388          relief valve
+```
+
+---
+
+
+```r
+pat_stats %&gt;% 
+  top_n(10, pmi) %&gt;% 
+  ggplot(aes(x = reorder(key, pmi), y = pmi)) +
+  geom_bar(stat = "identity") +
+  coord_flip() +
+  xlab("") +
+  theme_bw()
+```
+
+&lt;img src="8-pos_tagging_files/figure-html/unnamed-chunk-21-1.png" width="60%" style="display: block; margin: auto;" /&gt;
+
+---
+
+## Using a sequence of POS tags (noun phrases / verb phrases)
+
+
+
+```r
+# transform the pos in letters, to be readed by the tool
+patents_tagged$phrase_tag &lt;- as_phrasemachine(patents_tagged$upos, type = "upos")
+
+# extract exact patterns of POS, using regex
+stats &lt;- keywords_phrases(x = patents_tagged$phrase_tag, term = tolower(patents_tagged$token), 
+                          pattern = "(A|N)*N(P+D*(A|N)*N)*", 
+                          is_regex = TRUE, detailed = FALSE)
+
+head(stats)
+```
+
+```
+##   keyword ngram freq
+## 1    data     1  106
+## 2  device     1  100
+## 3  method     1   87
+## 4  system     1   82
+## 5 network     1   69
+## 6    that     1   57
+```
+
+
+---
+
+
+```r
+chunked_graph &lt;- stats %&gt;% 
+  filter(ngram &gt;1 ) %&gt;% 
+  top_n(10, freq) %&gt;% 
+  ggplot(aes(x = reorder(keyword, freq), y = freq)) +
+  geom_bar(stat = "identity") +
+  coord_flip() +
+  xlab("") +
+  theme_bw()
+```
+
+---
+
+
+```r
+chunked_graph
+```
+
+&lt;img src="8-pos_tagging_files/figure-html/unnamed-chunk-24-1.png" width="60%" style="display: block; margin: auto;" /&gt;
+
+
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"ratio": "16:9",
+"highlightLines": false,
+"highlightStyle": "solarized-ligth",
+"countIncrementalSlides": true
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
